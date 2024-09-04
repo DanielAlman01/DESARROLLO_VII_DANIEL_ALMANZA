@@ -1,12 +1,15 @@
 <?php
+    // Contar palabras
 function contar_palabras($frase) {
     return str_word_count($frase);
 }
 
+    // Contar vocales
 function contar_vocales($frase) {
     return preg_match_all('/[aeiouAEIOU]/i', $frase);
 }
 
+    // Invertir palabras
 function invertir_palabras($frase) {
     $palabras_array = explode(' ', $frase);
     return implode(' ', array_reverse($palabras_array));

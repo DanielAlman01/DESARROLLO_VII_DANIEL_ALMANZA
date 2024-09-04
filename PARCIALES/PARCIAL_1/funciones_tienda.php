@@ -7,52 +7,44 @@ $productos = [
     'gorra' => 25
 ];
 
-$carrito = [
-    'camisa' => 2,
-    'pantalon' => 1,
-    'zapatos' => 1,
-    'calcetines' => 3,
-    'gorra' => 0
-];
+function calcular_subtotal($carrito, $productos) {
+    $subtotal = 0;
+    foreach ($carrito as $producto => $cantidad) {
+        if (isset($productos[$producto])) { 
+            $subtotal += $productos[$producto] * $cantidad;
+        }
+    }
+    return $subtotal;
+}
 
-$subtotal = 0;
-foreach ($carrito as $producto => $cantidad) {
-    if (isset($productos[$producto])) {
-        $subtotal += $productos[$producto] * $cantidad;
+function calcular_descuento($subtotal) {
+    if ($subtotal < 100) {
+        return 0;
+    } elseif ($subtotal <= 500) {
+        return $subtotal * 0.05;
+    } elseif ($subtotal <= 1000) {
+        return $subtotal * 0.10;
+    } else {
+        return $subtotal * 0.15;
     }
 }
 
-// Calcular descuento
-if ($subtotal < 100) {
-    $descuento = 0;
-} elseif ($subtotal <= 500) {
-    $descuento = $subtotal * 0.05;
-} elseif ($subtotal <= 1000) {
-    $descuento = $subtotal * 0.10;
-} else {
-    $descuento = $subtotal * 0.15;
+function calcular_impuesto($subtotal) {
+    return $subtotal * 0.07;
 }
 
-// Calcular impuesto
-$impuesto = $subtotal * 0.07;
+function calcular_total($subtotal, $descuento, $impuesto) {
+    return $subtotal - $descuento + $impuesto;
+}
 
-// Calcular total
-$total = $subtotal - $descuento + $impuesto;
-
-echo "<h2>Problema 2: Resumen de compra</h2>";
-echo "<h3>Productos comprados:</h3>";
-echo "<ul>";
-foreach ($carrito as $producto => $cantidad) {
-    if ($cantidad > 0) {
-        $precio = $productos[$producto];
-        echo "<li>$producto: $cantidad x $$precio = $" . ($cantidad * $precio) . "</li>";
+function generar_resumen_compra($carrito, $productos) {
+    $resumen = "";
+    foreach ($carrito as $producto => $cantidad) {
+        if ($cantidad > 0) {
+            $precio = $productos[$producto];
+            $resumen .= "<li>$producto: $cantidad x $$precio = $" . ($cantidad * $precio) . "</li>";
+        }
     }
+    return $resumen;
 }
-echo "</ul>";
-
-echo "<p>Subtotal: $" . number_format($subtotal, 2) . "</p>";
-echo "<p>Descuento: $" . number_format($descuento, 2) . "</p>";
-echo "<p>Impuesto: $" . number_format($impuesto, 2) . "</p>";
-echo "<p><strong>Total a pagar: $" . number_format($total, 2) . "</strong></p>";
-
 ?>
