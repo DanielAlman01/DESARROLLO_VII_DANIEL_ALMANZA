@@ -1,27 +1,23 @@
-
 <?php
-$frases = [
-    "Hola mundo PHP",
-    "Programación web con PHP",
-    "Examen parcial de introducción a PHP"
-];
-
-echo "<h2>Problema 1: Análisis de texto</h2>";
-echo "<table border='1'><tr><th>Frase</th><th>Palabras</th><th>Vocales</th><th>Invertida</th></tr>";
-
-foreach ($frases as $frase) {
-    // Contar palabras
-    $palabras = str_word_count($frase);
-    
-    // Contar vocales
-    $vocales = preg_match_all('/[aeiouAEIOU]/i', $frase);
-    
-    // Invertir palabras
-    $palabras_array = explode(' ', $frase);
-    $invertida = implode(' ', array_reverse($palabras_array));
-    
-    echo "<tr><td>$frase</td><td>$palabras</td><td>$vocales</td><td>$invertida</td></tr>";
+function contar_palabras($frase) {
+    return str_word_count($frase);
 }
 
-echo "</table>";
+function contar_vocales($frase) {
+    return preg_match_all('/[aeiouAEIOU]/i', $frase);
+}
+
+function invertir_palabras($frase) {
+    $palabras_array = explode(' ', $frase);
+    return implode(' ', array_reverse($palabras_array));
+}
+
+function analizar_frase($frase) {
+    return [
+        'frase' => $frase,
+        'palabras' => contar_palabras($frase),
+        'vocales' => contar_vocales($frase),
+        'invertida' => invertir_palabras($frase)
+    ];
+}
 ?>
