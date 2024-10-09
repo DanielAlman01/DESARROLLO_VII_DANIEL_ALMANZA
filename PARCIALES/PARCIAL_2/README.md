@@ -2,7 +2,7 @@
 
 ## Descripción
 
-Implementacion de funcionalidades en el sistema de gestor de tareas
+Implementacion de funcionalidades en el sistema de gestor de blog
 
 ## Integrantes
 
