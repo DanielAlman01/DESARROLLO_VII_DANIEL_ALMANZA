@@ -47,4 +47,10 @@ function validarFotoPerfil($archivo) {
 
     return true;
 }
+
+function validarFechaNacimiento($fechaNacimiento) {
+    $fecha = DateTime::createFromFormat('Y-m-d', $fechaNacimiento);
+    return $fecha && $fecha->format('Y-m-d') === $fechaNacimiento && $fecha < new DateTime();
+}
+
 ?>
