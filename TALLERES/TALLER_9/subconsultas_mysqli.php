@@ -50,5 +50,80 @@ if ($result) {
 }
 
 mysqli_close($conn);
+
+// Encontrar los productos que nunca se han vendido
+$sql = "SELECT nombre, precio FROM productos
+        WHERE id NOT IN (SELECT producto_id FROM detalles_venta)";
+
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    echo "<h3>Productos que nunca se han vendido:</h3>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "Producto: {$row['nombre']}, Precio: ${$row['precio']}<br>";
+    }
+    mysqli_free_result($result);
+}
+
+// Listar las categorías con el número de productos y el valor total del inventario
+$sql = "SELECT c.nombre AS categoria, COUNT(p.id) AS num_productos, 
+        SUM(p.precio * p.stock) AS valor_total_inventario
+        FROM categorias c
+        LEFT JOIN productos p ON c.id = p.categoria_id
+        GROUP BY c.id";
+
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    echo "<h3>Categorías con número de productos y valor total del inventario:</h3>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "Categoría: {$row['categoria']}, Número de productos: {$row['num_productos']}, ";
+        echo "Valor total inventario: ${$row['valor_total_inventario']}<br>";
+    }
+    mysqli_free_result($result);
+}
+
+// Encontrar los clientes que han comprado todos los productos de una categoría específica
+$sql = "SELECT c.nombre, c.email FROM clientes c
+        WHERE NOT EXISTS (
+            SELECT 1 FROM categorias cat
+            WHERE cat.id = 2 -- Cambiar el ID de categoría aquí
+            AND NOT EXISTS (
+                SELECT 1 FROM detalles_venta dv
+                JOIN ventas v ON v.id = dv.venta_id
+                WHERE v.cliente_id = c.id AND dv.producto_id IN (
+                    SELECT p.id FROM productos p WHERE p.categoria_id = cat.id
+                )
+            )
+        )";
+
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    echo "<h3>Clientes que han comprado todos los productos de la categoría específica:</h3>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "Cliente: {$row['nombre']}, Email: {$row['email']}<br>";
+    }
+    mysqli_free_result($result);
+}
+
+//Calcular el porcentaje de ventas de cada producto respecto al total de ventas
+$sql = "SELECT p.nombre, 
+        (SUM(dv.subtotal) / (SELECT SUM(subtotal) FROM detalles_venta)) * 100 AS porcentaje_ventas
+        FROM productos p
+        JOIN detalles_venta dv ON p.id = dv.producto_id
+        GROUP BY p.id";
+
+$result = mysqli_query($conn, $sql);
+
+if ($result) {
+    echo "<h3>Porcentaje de ventas de cada producto respecto al total de ventas:</h3>";
+    while ($row = mysqli_fetch_assoc($result)) {
+        echo "Producto: {$row['nombre']}, Porcentaje de ventas: " . round($row['porcentaje_ventas'], 2) . "%<br>";
+    }
+    mysqli_free_result($result);
+}
+
+
 ?>
         
